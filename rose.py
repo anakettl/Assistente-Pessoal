@@ -1,12 +1,16 @@
+from gtts import gTTS
 import speech_recognition as sr
 from subprocess import call
+from requests import get
+from bs4 import BeautifulSoup
+
 
 ##configurações
 hotword = 'rose'
 
 
 
-##codigo principal
+##funcoes principais
 def monitora_microfone():
     # esta biblioteca esta sendo desativada Google Speech Recognition
     # outra biblioteca testada foi da IBM porem é paga a partir de 100 minutos de utilizacao mensal, criar user e password no
@@ -22,8 +26,8 @@ def monitora_microfone():
 
                 if hotword in trigger:
                     print('comando:', trigger)
-                    ##executar os comandos
-                    responde('feedback')
+                    #responde('feedback')
+                    executa_comandos(trigger)
                     break
 
             except sr.UnknownValueError:
@@ -34,10 +38,31 @@ def monitora_microfone():
     return trigger
 
 def responde(arquivo):
-    call(['mpg123', 'audios/'+ arquivo +'.mp3'])
+    call(['mpg123', 'audios/feedback.mp3'])
 
+
+def cria_audio(messagem):
+    tts = gTTS(messagem, lang='pt-br')
+    tts.save('audios/mensagem.mp3')
+    call(['mpg123', 'audios/mensagem.mp3'])
+
+def executa_comandos(trigger):
+    if 'notícias' in trigger:
+        ultimas_noticias()
+
+
+
+##funcoes comandos
+def ultimas_noticias():
+    site = get('https://news.google.com/rss?hl=pt-BR&gl=BR&ceid=BR:pt-419')
+    noticias = BeautifulSoup(site.text, 'html.parser')
+    for item in noticias.findAll('item')[:2]:
+        mensagem = item.title.text
+        print(mensagem)
+        cria_audio(mensagem)
 
 def main():
     monitora_microfone()
 
 main()
+#ultimas_noticias()
