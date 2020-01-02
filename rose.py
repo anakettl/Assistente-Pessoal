@@ -26,7 +26,7 @@ def monitora_microfone():
 
                 if hotword in trigger:
                     print('comando:', trigger)
-                    #responde('feedback')
+                    responde('feedback')
                     executa_comandos(trigger)
                     break
 
@@ -38,7 +38,7 @@ def monitora_microfone():
     return trigger
 
 def responde(arquivo):
-    call(['mpg123', 'audios/feedback.mp3'])
+    call(['mpg123', 'audios/'+ arquivo +'.mp3'])
 
 
 def cria_audio(messagem):
@@ -49,6 +49,8 @@ def cria_audio(messagem):
 def executa_comandos(trigger):
     if 'notícias' in trigger:
         ultimas_noticias()
+    else:
+        responde('comando-invalido')
 
 
 
