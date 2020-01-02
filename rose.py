@@ -13,7 +13,7 @@ hotword = 'rose'
 ##funcoes principais
 def monitora_microfone():
     # esta biblioteca esta sendo desativada Google Speech Recognition
-    # outra biblioteca testada foi da IBM porem é paga a partir de 100 minutos de utilizacao mensal, criar user e password no
+    # outra biblioteca testada foi da IBM porem é paga a partir de 100 minutos de utilizacao mensal, criar user e password no site
     microfone = sr.Recognizer()
     with sr.Microphone() as source:
 
@@ -41,15 +41,19 @@ def responde(arquivo):
     call(['mpg123', 'audios/'+ arquivo +'.mp3'])
 
 
-def cria_audio(messagem):
-    tts = gTTS(messagem, lang='pt-br')
+def cria_audio(mensagem):
+    tts = gTTS(mensagem, lang='pt-br')
     tts.save('audios/mensagem.mp3')
+    print('Rose: ', mensagem)
     call(['mpg123', 'audios/mensagem.mp3'])
 
 def executa_comandos(trigger):
     if 'notícias' in trigger:
         ultimas_noticias()
     else:
+        mensagem = trigger.strip(hotword)
+        cria_audio(mensagem + '?')
+        print('Comando inválido', mensagem)
         responde('comando-invalido')
 
 
@@ -60,7 +64,6 @@ def ultimas_noticias():
     noticias = BeautifulSoup(site.text, 'html.parser')
     for item in noticias.findAll('item')[:2]:
         mensagem = item.title.text
-        print(mensagem)
         cria_audio(mensagem)
 
 def main():
