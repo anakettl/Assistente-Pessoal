@@ -60,6 +60,13 @@ def executa_comandos(trigger):
         else:
             print('nao entendi o nome')
 
+    if 'tempo hoje' in trigger:
+        previsao_tempo(tempo=True)
+    
+    if 'temperatura hoje' in trigger:
+        previsao_tempo(minmax=True)
+
+
     else:
         mensagem = trigger.strip(hotword)
         cria_audio(mensagem + '?')
@@ -85,6 +92,20 @@ def playlists(album):
         print('album nao encontrado')
 
 
+def previsao_tempo(tempo=False, minmax=False):
+    site = get('http://api.openweathermap.org/data/2.5/weather?q=porto%20alegre,br&APPID=7cbcc39c129cb9d3caecc17c70258968&units=metric&lang=pt')
+    clima = site.json()
+    temperatura=clima['main']['temp']
+    minima=clima['main']['temp_min']
+    maxima=clima['main']['temp_max']
+    descricao=clima['weather'][0]['description']
+
+    if tempo:
+        mensagem=f'No momento fazem {temperatura} graus com: {descricao}'
+    if minmax:
+        mensagem=f'Mínima de {minima} e máxima de {maxima}'
+    
+    cria_audio(mensagem)
 
 
 ##programa principal
@@ -92,4 +113,7 @@ def main():
     monitora_microfone()
 
 main()
-#ultimas_noticias()
+
+
+
+
