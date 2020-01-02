@@ -3,6 +3,7 @@ import speech_recognition as sr
 from subprocess import call
 from requests import get
 from bs4 import BeautifulSoup
+import webbrowser as browser
 
 
 ##configurações
@@ -50,6 +51,15 @@ def cria_audio(mensagem):
 def executa_comandos(trigger):
     if 'notícias' in trigger:
         ultimas_noticias()
+
+    if 'toca' in trigger:
+        if 'queen' in trigger:
+            playlists('queen')
+        if 'kiss' in trigger:
+            playlists('kiss')
+        else:
+            print('nao entendi o nome')
+
     else:
         mensagem = trigger.strip(hotword)
         cria_audio(mensagem + '?')
@@ -66,6 +76,18 @@ def ultimas_noticias():
         mensagem = item.title.text
         cria_audio(mensagem)
 
+def playlists(album):
+    if album == 'queen':
+        browser.open('https://open.spotify.com/album/6i6folBtxKV28WX3msQ4FE')
+    elif album == 'kiss':
+        browser.open('https://open.spotify.com/album/5rf66ReWkobYT88G0Ky52y')
+    else:
+        print('album nao encontrado')
+
+
+
+
+##programa principal
 def main():
     monitora_microfone()
 
