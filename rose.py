@@ -4,6 +4,7 @@ from subprocess import call
 from requests import get
 from bs4 import BeautifulSoup
 import webbrowser as browser
+from paho.mqtt import publish
 
 
 ##configurações
@@ -55,7 +56,7 @@ def executa_comandos(trigger):
     if 'toca' in trigger:
         if 'queen' in trigger:
             playlists('queen')
-        if 'kiss' in trigger:
+        elif 'kiss' in trigger:
             playlists('kiss')
         else:
             print('nao entendi o nome')
@@ -65,6 +66,12 @@ def executa_comandos(trigger):
     
     if 'temperatura hoje' in trigger:
         previsao_tempo(minmax=True)
+
+    if 'liga a sala' in trigger:
+        publica_mqtt('sala/iluminacao/status', '1')
+    
+    if 'apaga a sala' in trigger:
+        publica_mqtt('sala/iluminacao/status', '0')
 
 
     else:
@@ -107,12 +114,20 @@ def previsao_tempo(tempo=False, minmax=False):
     
     cria_audio(mensagem)
 
+def publica_mqtt(topic,payload):
+    publish.single(topic, payload=payload, qos=0, retain=False, hostname="tailor.cloudmqtt.com", port=11989, client_id="rose", auth={'username': 'pbooczhp', 'password': '5ckBkqRhBpz6'})
+    if payload == '1':
+        mensagem = "Luz da sala ligada!"
+    if payload == '0':
+        mensagem = "Luz da sala desligada!"
+    cria_audio(mensagem)
 
 ##programa principal
 def main():
     monitora_microfone()
 
 main()
+
 
 
 
