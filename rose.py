@@ -67,10 +67,10 @@ def executa_comandos(trigger):
     if 'temperatura hoje' in trigger:
         previsao_tempo(minmax=True)
 
-    if 'liga a sala' in trigger:
+    if 'sala liga' in trigger:
         publica_mqtt('sala/iluminacao/status', '1')
     
-    if 'apaga a sala' in trigger:
+    if 'sala apaga' in trigger:
         publica_mqtt('sala/iluminacao/status', '0')
 
 
